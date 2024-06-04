@@ -41,9 +41,9 @@ const resizableWindow = /** @type HTMLElement */ (document.querySelectorAll(`.re
 const resizableWindowTwo = /** @type HTMLElement */ (document.querySelectorAll(`.resizable-two`)[0]);
 const resizableWindowThree = /** @type HTMLElement */ (document.querySelectorAll(`.resizable-three`)[0]);
 
-const titlebarOne = resizableWindow.children[0];
-const titlebarTwo = resizableWindowTwo.children[0];
-const titlebarThree = resizableWindowThree.children[0];
+// const titlebarOne = resizableWindow.children[0];
+// const titlebarTwo = resizableWindowTwo.children[0];
+// const titlebarThree = resizableWindowThree.children[0];
 
 // Set up settings for the whole sketch
 const settings = Object.freeze({
@@ -145,17 +145,17 @@ resizableWindowThree.addEventListener(`mouseleave`, function(e) {
   audioPlay("../../resources/haptic_lo.wav");
 });
 
-titlebarOne.addEventListener(`mousedown`, function(e) {
-  document.addEventListener(`mousemove`, onWindowOneDrag);
-});
+// titlebarOne.addEventListener(`mousedown`, function(e) {
+//   document.addEventListener(`mousemove`, onWindowOneDrag);
+// });
 
-titlebarTwo.addEventListener(`mousedown`, function(e) {
-  document.addEventListener(`mousemove`, onWindowTwoDrag);
-});
+// titlebarTwo.addEventListener(`mousedown`, function(e) {
+//   document.addEventListener(`mousemove`, onWindowTwoDrag);
+// });
 
-titlebarThree.addEventListener(`mousedown`, function(e) {
-  document.addEventListener(`mousemove`, onWindowThreeDrag);
-});
+// titlebarThree.addEventListener(`mousedown`, function(e) {
+//   document.addEventListener(`mousemove`, onWindowThreeDrag);
+// });
 
 document.addEventListener(`mouseup`, function(e) {
   document.removeEventListener(`mousemove`, onWindowOneDrag);
