@@ -40,19 +40,19 @@ const connect = async () => {
 
     saveState({ espruino: p, connected: true });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
   }
 };
 
 function onEspruinoStateChange(event) { 
   if (settings.debug) {
-    console.log(`${event.priorState} -> ${event.newState}`);
+    // console.log(`${event.priorState} -> ${event.newState}`);
   }
 }
 
 function onEspruinoData(event) {
   if (settings.debug) {
-    console.log(event.data);
+    // console.log(event.data);
   }
 }
 
@@ -230,13 +230,13 @@ function scalarHaptic() {
 
   if (speed == undefined) return;
   speed = Data.scaleClamped(speed, 0, 10, 0, 1);
-  console.log(`speed: ${speed}`);
+  // console.log(`speed: ${speed}`);
 
   if (speed < 0.2) {
-    console.log(`100%`);
+    // console.log(`100%`);
     return `sharp click 100%`;
   } else if (speed < 0.55) {
-    console.log(`60%`);
+    // console.log(`60%`);
     return `sharp tick 3 60%`;
   } else {
     return `sharp click 30%`;
