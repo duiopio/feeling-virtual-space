@@ -1,0 +1,1 @@
+In this version I have a resizable window (CSS) that triggers a console log when it reaches the minimum size. I just need to plug the haptic behaviour from the previous sketch and then I have a working first prototype of the window reacting to its size changing.

@@ -1,0 +1,149 @@
+:root {
+  --height: 50%;
+  --width: 24%;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0px;
+  padding: 0px;
+}
+
+body {
+  background-color: black;
+  overflow-x: scroll;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+
+/* .draggable {
+  position: absolute;
+  top: 50%;
+  left: 1300px;
+
+  height: 40px;
+  width: 40px;
+
+  background-color: blueviolet;
+  border-radius: 20px;
+} */
+
+/* .resizable {
+  position: absolute;
+  min-width: 300px;
+  min-height: 300px;
+
+  width: 900px;
+  height: 700px;
+  background-color: rgb(250, 250, 250);
+
+  top: 100px;
+  left: 400px;
+
+  overflow: hidden;
+  resize: both;
+
+
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  box-shadow: 0px 16px 16px 0px rgba(0, 0, 0, 0.08), 0px 4px 8px 0px rgba(0, 0, 0, 0.1);
+} */
+
+.held {
+  background-color: rgb(245, 245, 245);
+}
+
+/* 
+.buttonContainer {
+  position: relative;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+
+  width: 100vw;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 16px;
+
+  z-index: 50;
+}
+
+button {
+  padding: 16px 24px;
+  border-radius: 8px;
+
+  width: 160px;
+
+  background-color: #f08080;
+  border: none;
+  color: #391515;
+  font-weight: bold;
+
+  &:hover {
+    background-color: #c96363;
+    color: #1d0a0a;
+  }
+
+  z-index: 50;
+} */
+
+.new-desktop-area-right {
+  position: fixed;
+  top: 0px;
+  right: 0px;
+
+  width: 40px;
+  height: 100vh;
+  background-color: rgba(37, 255, 255, 0.081);
+}
+
+.desktop {
+  min-width: 100vw;
+  height: 100vh;
+  background-color: #cfcec9;
+
+  /* border: 8px solid black; */
+  border-radius: 16px;
+
+  scroll-margin: 0;
+  scroll-snap-align: start; /* Align the start of each desktop to the snapport */
+  flex: none;    
+  cursor: none;
+}
+
+
+.desktops-container {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  gap: 48px;
+  scroll-snap-type: x mandatory;
+  animation-timing-function: ease-out;
+  animation-duration: 100ms;
+}
+
+.cursor-replacement {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  background-color: rgb(70, 70, 70);
+
+  width: 50px;
+  height: 50px;
+
+  border-radius: 40px;
+}
+
+.barrier {
+  height: 100vh;
+  background-color: #afaeaa;
+  width: 80px;
+  position: absolute;
+  left: calc(50% - 40px);
+  cursor: none;
+}
