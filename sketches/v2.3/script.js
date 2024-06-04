@@ -21,7 +21,7 @@ const audioPlay = (() => {
     source.start();
     setTimeout(() => {
       source.stop();
-    }, 30);
+    }, 70);
   };
 })();
 
