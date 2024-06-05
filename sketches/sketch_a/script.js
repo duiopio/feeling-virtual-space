@@ -148,7 +148,7 @@ titlebar.addEventListener(`mousedown`, function(e) {
 document.addEventListener(`mouseup`, function(e) {
   document.removeEventListener(`mousemove`, onMouseDrag);
   document.removeEventListener(`mousemove`, onResize);
-  context.suspend();
+  gainNode.gain.setValueAtTime(0.0000001, context.currentTime);
   saveState({ shouldTrigger: false });
 });
 
@@ -255,6 +255,10 @@ setInterval(() => {
   if ((height + increaseAmount <= dimensions.maxHeight)) {
     resizableWindow.style.height = `${height + increaseAmount}px`;
   }
+
+  let power = Math.floor(settings.maxGain - Data.scaleClamped(Math.max(width, height), Math.max(minWidth, minHeight) + 5, Math.max(maxWidth, maxHeight), 0, settings.maxGain));
+  power = power / 1000;
+  gainNode.gain.setValueAtTime(power, context.currentTime);
 
 }, 20);
 
