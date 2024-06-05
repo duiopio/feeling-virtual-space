@@ -12,12 +12,29 @@ body {
 main {
   margin-right: 8%;
   margin-left: 12%;
-  width: auto;
+  width: 100%;
   display: flex;
   gap: 3%;
   flex-direction: row;
   align-items: center;
+  justify-content: space-around;
+
+  @media screen and (max-width: 1100px) {
+    flex-direction: column;
+  }
+}
+
+.image-link {
+  display: flex;
   justify-content: center;
+  align-items: center;
+  flex-shrink: 2;
+  
+  img {
+    width: 100%;
+    object-fit: scale-down;
+    height: auto;
+  }
 }
 
 a:hover {
