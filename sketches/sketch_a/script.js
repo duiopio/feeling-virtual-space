@@ -1,6 +1,6 @@
 import { Espruino} from "https://unpkg.com/ixfx/dist/io.js";
 import * as Data from "https://unpkg.com/ixfx/dist/data.js";
-import * as Dom from "https://unpkg.com/ixfx/dist/dom.js";
+import { pointTracker } from "https://unpkg.com/ixfx/dist/data.js";
 
 let context = new AudioContext();
 let oscillator = context.createOscillator();
@@ -124,6 +124,13 @@ function onEspruinoConnected(connected) {
 
 // END ESPRUINO UTIL
 
+function setup() {
+  drawWindow();
+}
+
+setup();
+
+
 resizeHandle.addEventListener(`mousedown`, function(e) {
   if (context.state === `suspended`) context.resume();
 
@@ -145,24 +152,9 @@ document.addEventListener(`mouseup`, function(e) {
   saveState({ shouldTrigger: false });
 });
 
-setInterval(() => {
-  const style = window.getComputedStyle(resizableWindow);
-
-  const width = Number.parseInt(style.width);
-  const height = Number.parseInt(style.height);
-  const minWidth = Number.parseInt(style.minWidth);
-  const maxWidth = Number.parseInt(style.maxWidth);
-  const maxHeight = Number.parseInt(style.maxHeight);
-  const left = Number.parseInt(style.left);
-  const top = Number.parseInt(style.top);
-
-  const cornerX = left + width;
-  const cornerY = top + height;
-
-  const resistance = Math.max(width, height) / Math.max(maxWidth, maxHeight);
-
-  saveState({ resistance: resistance });
-}, 100);
+window.addEventListener(`resize`, function(e) {
+  drawWindow();
+}), true;
 
 /**
  * @param {MouseEvent} e 
@@ -178,7 +170,6 @@ function onMouseDrag(e) {
 }
 
 /**
- * 
  * @param {MouseEvent} e 
  */
 function onResize(e) {
@@ -190,18 +181,109 @@ function onResize(e) {
   const minWidth = Number.parseInt(style.minWidth);
   const maxWidth = Number.parseInt(style.maxWidth);
 
-  resizableWindow.style.width = `${width + (e.movementX)}px`;
-  resizableWindow.style.height = `${height + (e.movementY)}px`;
+  const minHeight = Number.parseInt(style.minHeight);
+  const maxHeight = Number.parseInt(style.maxHeight);
 
-  let power = Math.floor(settings.maxGain - Data.scaleClamped(width, minWidth + 5, maxWidth, 0, settings.maxGain));
+  resizableWindow.style.width = `${width + (e.movementX)}px`;
+  resizableWindow.style.height = `${height + (e.movementY)}px`; 
+
+  let power = Math.floor(settings.maxGain - Data.scaleClamped(Math.max(width, height), Math.max(minWidth, minHeight) + 5, Math.max(maxWidth, maxHeight), 0, settings.maxGain));
   power = power / 1000;
   gainNode.gain.setValueAtTime(power, context.currentTime);
   saveState({ power: power }); 
 }
 
-setInterval(() => {
-  if (state.shouldTrigger) {  
-    if (!state.espruino) { console.warn(`Espruino not connected?`); return; }
-    state.espruino.write(`rtpMode([${state.power}], [${50}])\n`);
+// setInterval(() => {
+//   if (state.shouldTrigger) {  
+//     if (!state.espruino) { console.warn(`Espruino not connected?`); return; }
+//     state.espruino.write(`rtpMode([${state.power}], [${50}])\n`);
+//   }
+// }, 60);
+
+/**
+ * 
+ * @param {HTMLElement} window 
+ */
+
+function drawWindow() {
+  const element = resizableWindow;
+
+  const dimensions = {
+    minWidth: window.innerWidth / 4,
+    minHeight: window.innerHeight / 3,
+    maxWidth: window.innerWidth / 1.5,
+    maxHeight: window.innerHeight / 1.2,
+    width: window.innerWidth / 2,
+    height: window.innerWidth / 1.8,
+    centerX: window.innerWidth / 2,
+    centerY: window.innerHeight / 2,
   }
-}, 60);
+
+  element.style.minWidth = `${dimensions.minWidth}px`;
+  element.style.minHeight = `${dimensions.minHeight}px`;
+
+  element.style.maxWidth = `${dimensions.maxWidth}px`;
+  element.style.maxHeight = `${dimensions.maxHeight}px`;
+
+  element.style.width = `${dimensions.maxWidth}px`;
+  element.style.height = `${dimensions.maxHeight}px`;
+
+  element.style.top = `${dimensions.centerY - (dimensions.maxHeight / 2) + dimensions.maxHeight / 25}px`;
+  element.style.left = `${dimensions.centerX - (dimensions.maxWidth / 2)}px`;
+}
+
+setInterval(() => {
+  let style = window.getComputedStyle(resizableWindow);
+
+  const dimensions = {
+    minWidth: window.innerWidth / 4,
+    minHeight: window.innerHeight / 3,
+    maxWidth: window.innerWidth / 1.5,
+    maxHeight: window.innerHeight / 1.2
+  }
+
+  let width = Number.parseInt(style.width);
+  let height = Number.parseInt(style.height);
+
+  let increaseAmount = getResizeAmount();
+  console.log(increaseAmount);
+
+  if ((width + increaseAmount <= dimensions.maxWidth)) {
+    resizableWindow.style.width = `${width + increaseAmount}px`;
+  }
+
+  if ((height + increaseAmount <= dimensions.maxHeight)) {
+    resizableWindow.style.height = `${height + increaseAmount}px`;
+  }
+
+}, 20);
+
+
+/**
+ * @returns {number}
+ */
+function getResizeAmount() {
+  let style = window.getComputedStyle(resizableWindow);
+
+  let width = Number.parseInt(style.width);
+  let height = Number.parseInt(style.height);
+
+  let increaseAmount = 10;
+
+  const dimensions = {
+    minWidth: window.innerWidth / 4,
+    minHeight: window.innerHeight / 3,
+    maxWidth: window.innerWidth / 1.5,
+    maxHeight: window.innerHeight / 1.2,
+    width: window.innerWidth / 2,
+    height: window.innerWidth / 1.8,
+    centerX: window.innerWidth / 2,
+    centerY: window.innerHeight / 2,
+  }
+
+  // console.log(`width: ${width}, min: ${dimensions.minWidth}, max: ${dimensions.maxWidth}`);
+  increaseAmount = 1000 - Data.scaleClamped(width, dimensions.minWidth, dimensions.maxWidth, 0, 1000);
+  increaseAmount = (increaseAmount / 500) * 6;
+
+  return increaseAmount;
+}

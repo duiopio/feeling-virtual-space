@@ -154,7 +154,6 @@ const cursorReplacement = /** @type HTMLElement */ (document.querySelector(`.cur
 
 function setup() {
 
-
   document.addEventListener(`keydown`, function(e) {
     switch (e.key) {
       case `c`: {
@@ -211,8 +210,12 @@ document.addEventListener(`mousemove`, function(e) {
 });
 
 function drawBarrier() {
+  let prevBarrier = document.getElementById(`barrier`);
+  prevBarrier?.remove();
+
   let barrier = document.createElement(`div`);
 
+  barrier.id = `barrier`;
   barrier.style.backgroundColor = `black`;
   barrier.style.position = `absolute`;
   barrier.style.height = `100vh`;
@@ -259,3 +262,8 @@ function getClosestSide(x) {
 
   return settings.bump.left;
 }
+
+window.addEventListener('resize', function(event) {
+  settings.bump.adjust(80, window.innerWidth / 2);
+  drawBarrier();
+}, true);
