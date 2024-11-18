@@ -1,4 +1,4 @@
-import { Espruino} from "https://unpkg.com/ixfx/dist/io.js";
+import { Espruino} from "ixfx/io.js";
 import * as Mouse from "./espruino.js";
 
 
@@ -116,32 +116,32 @@ function onEspruinoConnected(connected) {
 // END ESPRUINO UTIL
 
 resizableWindow.addEventListener(`mouseenter`, function(e) {
-  // Mouse.trigger("sharp click 30%", state.espruino);
+  Mouse.trigger("sharp click 30%", state.espruino);
   audioPlay("../../resources/haptic_hi.wav");
 });
 
 resizableWindow.addEventListener(`mouseleave`, function(e) {
-  // Mouse.trigger("sharp click 30%", state.espruino);
+  Mouse.trigger("sharp click 30%", state.espruino);
   audioPlay("../../resources/haptic_hi.wav");
 });
 
 resizableWindowTwo.addEventListener(`mouseenter`, function(e) {
-  // Mouse.trigger("sharp click 30%", state.espruino);
+  Mouse.trigger("sharp click 30%", state.espruino);
   audioPlay("../../resources/haptic_mi.wav");
 });
 
 resizableWindowTwo.addEventListener(`mouseleave`, function(e) {
-  // Mouse.trigger("sharp click 30%", state.espruino);
+  Mouse.trigger("sharp click 30%", state.espruino);
   audioPlay("../../resources/haptic_mi.wav");
 });
 
 resizableWindowThree.addEventListener(`mouseenter`, function(e) {
-  // Mouse.trigger("sharp click 30%", state.espruino);
+  Mouse.trigger("sharp click 30%", state.espruino);
   audioPlay("../../resources/haptic_lo.wav");
 });
 
 resizableWindowThree.addEventListener(`mouseleave`, function(e) {
-  // Mouse.trigger("sharp click 30%", state.espruino);
+  Mouse.trigger("sharp click 30%", state.espruino);
   audioPlay("../../resources/haptic_lo.wav");
 });
 

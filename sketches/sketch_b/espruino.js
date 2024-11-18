@@ -1,6 +1,4 @@
-import { Espruino} from "https://unpkg.com/ixfx/dist/io.js";
-
-
+import { Espruino} from "ixfx/io.js";
 
 /**
  * Triggers a effect, referenced by number of name

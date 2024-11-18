@@ -1,5 +1,6 @@
-import { Espruino} from "https://unpkg.com/ixfx/dist/io.js";
-import * as Data from "https://unpkg.com/ixfx/dist/data.js";
+import { Espruino} from "ixfx/io.js";
+import * as Numbers from "ixfx/numbers.js";
+import { point } from "ixfx/trackers.js";
 import * as Mouse from "./espruino.js";
 import { SingleTrigger, Desktop, DesktopManager } from "./util.js";
 
@@ -13,7 +14,8 @@ const audioPlay = (() => {
     const source = context.createBufferSource();
     source.buffer = await fetch(url)
       .then(res => res.arrayBuffer())
-      .then(arrayBuffer => context.decodeAudioData(arrayBuffer));
+      .then(arrayBuffer => context.decodeAudioData(arrayBuffer))
+      .catch(err => console.error(err));
     source.connect(context.destination);
     source.start();
     
@@ -121,7 +123,7 @@ let state = Object.freeze({
 
 const settings = Object.freeze({
   /** @type Data.PointTracker */
-  tracker: Data.pointTracker({ sampleLimit: 100 }),
+  tracker: point({ sampleLimit: 100 }),
   /** @type boolean */
   debug: false,
   /** @type SingleTrigger */
@@ -169,6 +171,7 @@ function setup() {
   settings.triggerManager.triggered = false;
 
   drawBarrier();
+  audioPlay();
 }
 
 setup();
@@ -196,6 +199,7 @@ document.addEventListener(`mousemove`, function(e) {
     if (cursor.x > settings.bump.left && cursor.x < settings.bump.right) {
       if (settings.triggerManager.triggered == false) {
         audioPlay("../../resources/haptic_lo.wav");
+        // Mouse.trigger("sharp click 100%", state.espruino);
         settings.triggerManager.triggered = true;
       }
       cursor.x = getClosestSide(e.clientX);
@@ -203,7 +207,6 @@ document.addEventListener(`mousemove`, function(e) {
       settings.triggerManager.reset();
     }
 
-    scalarHaptic();
     cursorReplacement.style.left = `${cursor.x - (size / 2)}px`;
     cursorReplacement.style.top = `${top}px`;
   }
@@ -232,7 +235,7 @@ function scalarHaptic() {
   let speed = tracker.lastResult?.fromLast.speed;
 
   if (speed == undefined) return;
-  speed = Data.scaleClamped(speed, 0, 10, 0, 1);
+  speed = Numbers.scaleClamped(speed, 0, 10, 0, 1);
   // console.log(`speed: ${speed}`);
 
   if (speed < 0.2) {

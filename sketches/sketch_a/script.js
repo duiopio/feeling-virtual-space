@@ -1,6 +1,5 @@
-import { Espruino} from "https://unpkg.com/ixfx/dist/io.js";
-import * as Data from "https://unpkg.com/ixfx/dist/data.js";
-import { pointTracker } from "https://unpkg.com/ixfx/dist/data.js";
+import { Espruino} from "ixfx/io.js";
+import * as Numbers from "ixfx/numbers.js";
 
 let context = new AudioContext();
 let oscillator = context.createOscillator();
@@ -132,6 +131,8 @@ setup();
 
 
 resizeHandle.addEventListener(`mousedown`, function(e) {
+  saveState({ shouldTrigger: true });
+
   if (context.state === `suspended`) context.resume();
 
   if (state.oscOn === false) { 
@@ -187,18 +188,24 @@ function onResize(e) {
   resizableWindow.style.width = `${width + (e.movementX)}px`;
   resizableWindow.style.height = `${height + (e.movementY)}px`; 
 
-  let power = Math.floor(settings.maxGain - Data.scaleClamped(Math.max(width, height), Math.max(minWidth, minHeight) + 5, Math.max(maxWidth, maxHeight), 0, settings.maxGain));
-  power = power / 1000;
-  gainNode.gain.setValueAtTime(power, context.currentTime);
-  saveState({ power: power }); 
+  let soundPower = Math.floor(settings.maxGain - Numbers.scaleClamped(Math.max(width, height), Math.max(minWidth, minHeight) + 5, Math.max(maxWidth, maxHeight), 0, settings.maxGain));
+  let hapticPower = Math.floor(settings.maxGain - Numbers.scaleClamped(width, minWidth + 5, maxWidth, 0, 100));
+  soundPower = soundPower / 1000;
+  gainNode.gain.setValueAtTime(soundPower, context.currentTime);
+  console.log(`Haptic power: ${hapticPower.toString()}`);
+
+  saveState({ power: hapticPower }); 
 }
 
-// setInterval(() => {
-//   if (state.shouldTrigger) {  
-//     if (!state.espruino) { console.warn(`Espruino not connected?`); return; }
-//     state.espruino.write(`rtpMode([${state.power}], [${50}])\n`);
-//   }
-// }, 60);
+setInterval(() => {
+  if (state.shouldTrigger) {  
+    if (!state.espruino) { console.warn(`Espruino not connected?`); return; }
+    console.log("triggering");
+    state.espruino.write(`rtpMode([${state.power}], [${50}])\n`);
+  } else {
+    saveState({ power: 0 });
+  }
+}, 60);
 
 /**
  * 
@@ -246,17 +253,19 @@ setInterval(() => {
   let height = Number.parseInt(style.height);
 
   let increaseAmount = getResizeAmount();
-  console.log(increaseAmount);
+
 
   if ((width + increaseAmount <= dimensions.maxWidth)) {
     resizableWindow.style.width = `${width + increaseAmount}px`;
+  } else {
+    state.shouldTrigger = true;
   }
 
   if ((height + increaseAmount <= dimensions.maxHeight)) {
     resizableWindow.style.height = `${height + increaseAmount}px`;
   }
 
-  let power = Math.floor(settings.maxGain - Data.scaleClamped(Math.max(width, height), Math.max(minWidth, minHeight) + 5, Math.max(maxWidth, maxHeight), 0, settings.maxGain));
+  let power = Math.floor(settings.maxGain - Numbers.scaleClamped(Math.max(width, height), Math.max(dimensions.minWidth, dimensions.minHeight) + 5, Math.max(dimensions.maxWidth, dimensions.maxHeight), 0, settings.maxGain));
   power = power / 1000;
   gainNode.gain.setValueAtTime(power, context.currentTime);
 
@@ -286,7 +295,7 @@ function getResizeAmount() {
   }
 
   // console.log(`width: ${width}, min: ${dimensions.minWidth}, max: ${dimensions.maxWidth}`);
-  increaseAmount = 1000 - Data.scaleClamped(width, dimensions.minWidth, dimensions.maxWidth, 0, 1000);
+  increaseAmount = 1000 - Numbers.scaleClamped(width, dimensions.minWidth, dimensions.maxWidth, 0, 1000);
   increaseAmount = (increaseAmount / 500) * 6;
 
   return increaseAmount;

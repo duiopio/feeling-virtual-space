@@ -3,9 +3,6 @@ class Draggable {
   startY;
   startWidth;
   startHeight;
-
-  
-
   element;
 
   constructor() {
